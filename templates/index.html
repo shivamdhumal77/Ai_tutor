@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Teacher AI - Enhanced Learning Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Roboto+Slab:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --success: #38d9a9;
+            --warning: #ffd43b;
+            --error: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --highlight: #7209b7;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+        }
+        
+        h1 {
+            font-family: 'Roboto Slab', serif;
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--highlight));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: #4a5568;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            font-weight: 400;
+        }
+        
+        .features-banner {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .feature-badge {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--accent);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .input-section {
+            text-align: center;
+        }
+        
+        .input-group {
+            display: flex;
+            max-width: 700px;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.15);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        
+        input {
+            flex: 1;
+            padding: 20px 30px;
+            border: none;
+            font-size: 1.15rem;
+            outline: none;
+            background: #fff;
+        }
+        
+        input:focus {
+            background: #f8fafc;
+        }
+        
+        input::placeholder {
+            color: #a0aec0;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .voice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .voice-btn {
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .examples {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .example-btn {
+            background: #edf2f7;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .example-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .result-section {
+            display: none;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .topic-title {
+            font-family: 'Roboto Slab', serif;
+            font-size: 2.2rem;
+            color: var(--secondary);
+            max-width: 70%;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            color: #4a5568;
+        }
+        
+        .control-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .control-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .explanation {
+            font-size: 1.15rem;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            line-height: 1.9;
+        }
+        
+        .explanation h2 {
+            color: var(--primary);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 1.8rem;
+        }
+        
+        .explanation h3 {
+            color: var(--highlight);
+            margin: 25px 0 15px;
+            font-size: 1.4rem;
+        }
+        
+        .explanation p {
+            margin-bottom: 20px;
+        }
+        
+        .explanation ul, .explanation ol {
+            margin-left: 35px;
+            margin-bottom: 25px;
+        }
+        
+        .explanation li {
+            margin-bottom: 12px;
+        }
+        
+        .explanation b {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+        
+        .word-selector {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .word-selector:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .sidebar-card h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .video-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .video-item:hover {
+            background-color: #f8fafc;
+        }
+        
+        .video-thumbnail {
+            width: 80px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+        
+        .video-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .video-info p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .article-item {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        
+        .article-item:hover {
+            border-color: var(--accent);
+            background-color: #f8fafc;
+        }
+        
+        .related-topic {
+            display: inline-block;
+            background: var(--light);
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .related-topic:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quiz-section {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .quiz-option {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--accent);
+            background-color: #f8fafc;
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .definition-popup {
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 350px;
+            display: none;
+            border-top: 4px solid var(--primary);
+        }
+        
+        .definition-popup h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            display: none;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(67, 97, 238, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 25px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            font-weight: 600;
+        }
+        
+        .voice-settings {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        
+        .voice-setting-item {
+            margin-bottom: 15px;
+        }
+        
+        .voice-setting-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .voice-setting-item input, .voice-setting-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+        
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+                border-radius: 16px;
+            }
+            
+            input {
+                padding: 18px;
+                border-radius: 16px 16px 0 0;
+            }
+            
+            button {
+                border-radius: 0 0 16px 16px;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .topic-title {
+                max-width: 100%;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .features-banner {
+                gap: 15px;
+            }
+            
+            .feature-badge {
+                font-size: 0.8rem;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <h1>Master Teacher AI</h1>
+            </div>
+            <p class="subtitle">Enhanced Learning Platform with Voice Narration, Word Definitions, Video Recommendations & More!</p>
+            
+            <div class="features-banner">
+                <div class="feature-badge">
+                    <i class="fas fa-volume-up"></i>
+                    Advanced Voice
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-book"></i>
+                    Word Definitions
+                </div>
+                <div class="feature-badge">
+                    <i class="fab fa-youtube"></i>
+                    Video Learning
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-question-circle"></i>
+                    Interactive Quiz
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <section class="card input-section">
+                <h2 style="color: var(--secondary); margin-bottom: 20px;">What would you like to learn today?</h2>
+                <p style="margin-bottom: 25px; font-size: 1.1rem;">Enter any topic and discover comprehensive lessons with multimedia resources</p>
+                
+                <div class="voice-controls">
+                    <button class="voice-btn btn-secondary" id="voice-speed-btn">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Speed: Normal
+                    </button>
+                    <button class="voice-btn btn-secondary" id="voice-settings-btn">
+                        <i class="fas fa-cog"></i>
+                        Voice Settings
+                    </button>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="topic-input" placeholder="Enter a topic (e.g., Quantum Physics, French Revolution, Machine Learning)">
+                    <button id="explain-btn">
+                        <i class="fas fa-magic"></i>
+                        Teach Me
+                    </button>
+                </div>
+                
+                <div class="examples">
+                    <p>Popular topics: </p>
+                    <button class="example-btn" data-topic="Artificial Intelligence">Artificial Intelligence</button>
+                    <button class="example-btn" data-topic="Climate Change">Climate Change</button>
+                    <button class="example-btn" data-topic="DNA Structure">DNA Structure</button>
+                    <button class="example-btn" data-topic="Renaissance Art">Renaissance Art</button>
+                    <button class="example-btn" data-topic="Quantum Computing">Quantum Computing</button>
+                    <button class="example-btn" data-topic="Black Holes">Black Holes</button>
+                </div>
+            </section>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="font-size: 1.2rem;">Preparing your comprehensive lesson...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            
+            <div class="error" id="error-message">
+                <p>An error occurred. Please try again.</p>
+            </div>
+            
+            <section class="card result-section" id="result-section">
+                <div class="result-header">
+                    <h2 class="topic-title" id="result-topic">Lesson Topic</h2>
+                    <div class="controls">
+                        <button class="control-btn" id="voice-btn">
+                            <i class="fas fa-play"></i>
+                            Listen
+                        </button>
+                        <button class="control-btn" id="quiz-btn">
+                            <i class="fas fa-question-circle"></i>
+                            Take Quiz
+                        </button>
+                        <button class="control-btn" id="bookmark-btn">
+                            <i class="fas fa-bookmark"></i>
+                            Bookmark
+                        </button>
+                        <button class="control-btn" id="new-lesson-btn">
+                            <i class="fas fa-plus"></i>
+                            New Lesson
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="content-grid">
+                    <div class="main-content">
+                        <div class="explanation" id="explanation">
+                            <!-- Explanation content will be inserted here -->
+                        </div>
+                        
+                        <div class="quiz-section" id="quiz-section">
+                            <h3><i class="fas fa-brain"></i> Test Your Knowledge</h3>
+                            <div id="quiz-content">
+                                <!-- Quiz questions will be inserted here -->
+                            </div>
+                            <div class="quiz-results" id="quiz-results" style="display: none;">
+                                <h4>Quiz Results</h4>
+                                <div id="quiz-score"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar">
+                        <div class="sidebar-card" id="videos-section">
+                            <h3><i class="fab fa-youtube"></i> Related Videos</h3>
+                            <div id="youtube-videos">
+                                <!-- YouTube videos will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-card" id="articles-section">
+                            <h3><i class="fas fa-newspaper"></i> Recommended Articles</h3>
+                            <div id="article-suggestions">
+                                <!-- Article suggestions will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-card" id="related-section">
+                            <h3><i class="fas fa-sitemap"></i> Related Topics</h3>
+                            <div id="related-topics">
+                                <!-- Related topics will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer style="text-align: center; padding: 30px 0; color: #718096; margin-top: 50px;">
+            <p><strong>Master Teacher AI</strong> | Enhanced Learning Platform | Powered by Gemini API</p>
+            <p>Features: Voice Narration • Word Definitions • Video Learning • Interactive Quizzes • Smart Recommendations</p>
+        </footer>
+    </div>
+    
+    <!-- Definition Popup -->
+    <div class="definition-popup" id="definition-popup">
+        <div class="definition-content">
+            <h4 id="definition-word"></h4>
+            <div id="definition-details"></div>
+            <button style="margin-top: 10px; padding: 5px 10px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="closeDefinition()">Close</button>
+        </div>
+    </div>
+    
+    <!-- Voice Settings Panel -->
+    <div class="voice-settings" id="voice-settings">
+        <h3>Voice Settings</h3>
+        <div class="voice-setting-item">
+            <label>Voice:</label>
+            <select id="voice-select">
+                <option value="">Auto Select</option>
+            </select>
+        </div>
+        <div class="voice-setting-item">
+            <label>Speed:</label>
+            <input type="range" id="voice-speed" min="0.5" max="2" step="0.1" value="1">
+            <span id="speed-display">1.0x</span>
+        </div>
+        <div class="voice-setting-item">
+            <label>Pitch:</label>
+            <input type="range" id="voice-pitch" min="0.5" max="2" step="0.1" value="1">
+            <span id="pitch-display">1.0x</span>
+        </div>
+        <div class="voice-setting-item">
+            <button onclick="closeVoiceSettings()" style="background: var(--primary); color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let currentSpeech = null;
+        let currentVoice = null;
+        let voiceSpeed = 1.0;
+        let voicePitch = 1.0;
+        let currentQuiz = null;
+        let quizScore = 0;
+        let bookmarkedLessons = JSON.parse(localStorage.getItem('bookmarkedLessons') || '[]');
+        
+        // DOM elements
+        const elements = {
+            explainBtn: document.getElementById('explain-btn'),
+            topicInput: document.getElementById('topic-input'),
+            resultSection: document.getElementById('result-section'),
+            loading: document.getElementById('loading'),
+            progressFill: document.getElementById('progress-fill'),
+            errorMessage: document.getElementById('error-message'),
+            resultTopic: document.getElementById('result-topic'),
+            explanation: document.getElementById('explanation'),
+            voiceBtn: document.getElementById('voice-btn'),
+            quizBtn: document.getElementById('quiz-btn'),
+            bookmarkBtn: document.getElementById('bookmark-btn'),
+            newLessonBtn: document.getElementById('new-lesson-btn'),
+            voiceSpeedBtn: document.getElementById('voice-speed-btn'),
+            voiceSettingsBtn: document.getElementById('voice-settings-btn'),
+            voiceSettings: document.getElementById('voice-settings'),
+            voiceSelect: document.getElementById('voice-select'),
+            voiceSpeedSlider: document.getElementById('voice-speed'),
+            voicePitchSlider: document.getElementById('voice-pitch'),
+            speedDisplay: document.getElementById('speed-display'),
+            pitchDisplay: document.getElementById('pitch-display'),
+            quizSection: document.getElementById('quiz-section'),
+            quizContent: document.getElementById('quiz-content'),
+            quizResults: document.getElementById('quiz-results'),
+            quizScore: document.getElementById('quiz-score'),
+            youtubeVideos: document.getElementById('youtube-videos'),
+            articleSuggestions: document.getElementById('article-suggestions'),
+            relatedTopics: document.getElementById('related-topics'),
+            definitionPopup: document.getElementById('definition-popup'),
+            definitionWord: document.getElementById('definition-word'),
+            definitionDetails: document.getElementById('definition-details')
+        };
+        
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeVoices();
+            setupEventListeners();
+            loadBookmarks();
+        });
+        
+        // Initialize voices
+        function initializeVoices() {
+            function populateVoices() {
+                const voices = speechSynthesis.getVoices();
+                elements.voiceSelect.innerHTML = '<option value="">Auto Select</option>';
+                
+                voices.forEach((voice, index) => {
+                    if (voice.lang.includes('en')) {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        elements.voiceSelect.appendChild(option);
+                    }
+                });
+                
+                // Auto-select a good female voice
+                const femaleVoice = voices.find(voice => 
+                    voice.lang.includes('en') && 
+                    (voice.name.toLowerCase().includes('female') || 
+                     voice.name.toLowerCase().includes('samantha') ||
+                     voice.name.toLowerCase().includes('karen') ||
+                     voice.name.toLowerCase().includes('zira'))
+                );
+                
+                if (femaleVoice) {
+                    currentVoice = femaleVoice;
+                    elements.voiceSelect.value = voices.indexOf(femaleVoice);
+                }
+            }
+            
+            populateVoices();
+            speechSynthesis.onvoiceschanged = populateVoices;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            elements.explainBtn.addEventListener('click', explainTopic);
+            elements.topicInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') explainTopic();
+            });
+            
+            elements.voiceBtn.addEventListener('click', toggleVoice);
+            elements.quizBtn.addEventListener('click', toggleQuiz);
+            elements.bookmarkBtn.addEventListener('click', toggleBookmark);
+            elements.newLessonBtn.addEventListener('click', newLesson);
+            elements.voiceSpeedBtn.addEventListener('click', cycleVoiceSpeed);
+            elements.voiceSettingsBtn.addEventListener('click', toggleVoiceSettings);
+            
+            elements.voiceSelect.addEventListener('change', updateVoiceSelection);
+            elements.voiceSpeedSlider.addEventListener('input', updateVoiceSpeed);
+            elements.voicePitchSlider.addEventListener('input', updateVoicePitch);
+            
+            // Example buttons
+            document.querySelectorAll('.example-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    elements.topicInput.value = this.dataset.topic;
+                    explainTopic();
+                });
+            });
+            
+            // Click outside to close popups
+            document.addEventListener('click', function(e) {
+                if (!elements.voiceSettings.contains(e.target) && !elements.voiceSettingsBtn.contains(e.target)) {
+                    elements.voiceSettings.style.display = 'none';
+                }
+                if (!elements.definitionPopup.contains(e.target)) {
+                    elements.definitionPopup.style.display = 'none';
+                }
+            });
+        }
+        
+        // Main explanation function
+        async function explainTopic() {
+            const topic = elements.topicInput.value.trim();
+            
+            if (!topic) {
+                alert('Please enter a topic to learn');
+                return;
+            }
+            
+            showLoading();
+            stopVoice();
+            
+            try {
+                const response = await fetch('/explain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `topic=${encodeURIComponent(topic)}`
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    displayResults(data);
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            }
+        }
+        
+        // Display results
+        function displayResults(data) {
+            elements.loading.style.display = 'none';
+            elements.errorMessage.style.display = 'none';
+            
+            // Update main content
+            elements.resultTopic.textContent = data.topic;
+            elements.explanation.innerHTML = formatExplanation(data.explanation);
+            
+            // Add word selection functionality
+            addWordSelectionToText();
+            
+            // Update sidebar content
+            updateYouTubeVideos(data.youtube_videos || []);
+            updateArticleSuggestions(data.articles || []);
+            updateRelatedTopics(data.related_topics || []);
+            
+            // Update bookmark button
+            updateBookmarkButton(data.topic);
+            
+            // Show results
+            elements.resultSection.style.display = 'block';
+            elements.resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Format explanation text
+        function formatExplanation(text) {
+            // Convert markdown-like headings to HTML
+            text = text.replace(/## (.*?)\n/g, '<h2>$1</h2>');
+            text = text.replace(/### (.*?)\n/g, '<h3>$1</h3>');
+            
+            // Convert line breaks to paragraphs
+            return text.split('\n\n').map(para => {
+                if (para.startsWith('<h')) {
+                    return para;
+                }
+                return `<p>${para}</p>`;
+            }).join('');
+        }
+        
+        // Add word selection functionality
+        function addWordSelectionToText() {
+            const textNodes = getTextNodes(elements.explanation);
+            
+            textNodes.forEach(node => {
+                const words = node.textContent.split(/(\s+)/);
+                const fragment = document.createDocumentFragment();
+                
+                words.forEach(word => {
+                    if (word.trim() && word.length > 3) {
+                        const span = document.createElement('span');
+                        span.textContent = word;
+                        span.className = 'word-selector';
+                        span.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showWordDefinition(word.replace(/[^\w]/g, ''), e.clientX, e.clientY);
+                        });
+                        fragment.appendChild(span);
+                    } else {
+                        fragment.appendChild(document.createTextNode(word));
+                    }
+                });
+                
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+        
+        // Get text nodes from element
+        function getTextNodes(element) {
+            const textNodes = [];
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            let node;
+            while (node = walker.nextNode()) {
+                if (node.textContent.trim()) {
+                    textNodes.push(node);
+                }
+            }
+            
+            return textNodes;
+        }
+        
+        // Show word definition
+        async function showWordDefinition(word, x, y) {
+            elements.definitionWord.textContent = word;
+            elements.definitionDetails.innerHTML = '<p>Loading definition...</p>';
+            elements.definitionPopup.style.display = 'block';
+            elements.definitionPopup.style.left = Math.min(x, window.innerWidth - 350) + 'px';
+            elements.definitionPopup.style.top = Math.min(y, window.innerHeight - 200) + 'px';
+            
+            try {
+                const response = await fetch('/define', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `word=${encodeURIComponent(word)}`
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    elements.definitionDetails.innerHTML = `<p>Error: ${data.error}</p>`;
+                } else {
+                    elements.definitionDetails.innerHTML = `
+                        <p><strong>Definition:</strong> ${data.definition}</p>
+                        <p><strong>Part of Speech:</strong> ${data.part_of_speech}</p>
+                        <p><strong>Example:</strong> ${data.example}</p>
+                        ${data.synonyms && data.synonyms.length > 0 ? `<p><strong>Synonyms:</strong> ${data.synonyms.join(', ')}</p>` : ''}
+                    `;
+                }
+            } catch (error) {
+                elements.definitionDetails.innerHTML = `<p>Error fetching definition: ${error.message}</p>`;
+            }
+        }
+        
+        // Close definition popup
+        function closeDefinition() {
+            elements.definitionPopup.style.display = 'none';
+        }
+        
+        // Update YouTube videos
+        function updateYouTubeVideos(videos) {
+            if (videos.length === 0) {
+                elements.youtubeVideos.innerHTML = '<p>No videos available for this topic.</p>';
+                return;
+            }
+            
+            elements.youtubeVideos.innerHTML = videos.map(video => `
+                <div class="video-item">
+                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                    <div class="video-info">
+                        <h4><a href="${video.url}" target="_blank">${video.title}</a></h4>
+                        <p>${video.channel}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Update article suggestions
+        function updateArticleSuggestions(articles) {
+            if (articles.length === 0) {
+                elements.articleSuggestions.innerHTML = '<p>No articles available for this topic.</p>';
+                return;
+            }
+            
+            elements.articleSuggestions.innerHTML = articles.map(article => `
+                <div class="article-item">
+                    <h4>${article.title}</h4>
+                    <p>${article.description}</p>
+                    <small><i class="fas fa-tag"></i> ${article.source_type}</small>
+                </div>
+            `).join('');
+        }
+        
+        // Update related topics
+        function updateRelatedTopics(topics) {
+            if (topics.length === 0) {
+                elements.relatedTopics.innerHTML = '<p>No related topics available.</p>';
+                return;
+            }
+            
+            elements.relatedTopics.innerHTML = topics.map(topic => `
+                <span class="related-topic" onclick="learnRelatedTopic('${topic}')">${topic}</span>
+            `).join('');
+        }
+        
+        // Learn related topic
+        function learnRelatedTopic(topic) {
+            elements.topicInput.value = topic;
+            explainTopic();
+        }
+        
+        // Voice control functions
+        function toggleVoice() {
+            if (speechSynthesis.speaking && !speechSynthesis.paused) {
+                speechSynthesis.pause();
+                elements.voiceBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+                elements.voiceBtn.classList.remove('active');
+            } else if (speechSynthesis.paused) {
+                speechSynthesis.resume();
+                elements.voiceBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                elements.voiceBtn.classList.add('active');
+            } else {
+                startVoiceNarration();
+            }
+        }
+        
+        function startVoiceNarration() {
+            const text = elements.explanation.innerText;
+            if (!text) return;
+            
+            currentSpeech = new SpeechSynthesisUtterance(text);
+            currentSpeech.rate = voiceSpeed;
+            currentSpeech.pitch = voicePitch;
+            
+            if (currentVoice) {
+                currentSpeech.voice = currentVoice;
+            }
+            
+            currentSpeech.onstart = () => {
+                elements.voiceBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                elements.voiceBtn.classList.add('active');
+            };
+            
+            currentSpeech.onend = () => {
+                elements.voiceBtn.innerHTML = '<i class="fas fa-play"></i> Listen';
+                elements.voiceBtn.classList.remove('active');
+            };
+            
+            currentSpeech.onerror = () => {
+                elements.voiceBtn.innerHTML = '<i class="fas fa-play"></i> Listen';
+                elements.voiceBtn.classList.remove('active');
+            };
+            
+            speechSynthesis.speak(currentSpeech);
+        }
+        
+        function stopVoice() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+                elements.voiceBtn.innerHTML = '<i class="fas fa-play"></i> Listen';
+                elements.voiceBtn.classList.remove('active');
+            }
+        }
+        
+        function cycleVoiceSpeed() {
+            const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+            const currentIndex = speeds.indexOf(voiceSpeed);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+            voiceSpeed = speeds[nextIndex];
+            
+            elements.voiceSpeedBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i> Speed: ${voiceSpeed}x`;
+            elements.voiceSpeedSlider.value = voiceSpeed;
+            elements.speedDisplay.textContent = voiceSpeed + 'x';
+        }
+        
+        function toggleVoiceSettings() {
+            const isVisible = elements.voiceSettings.style.display === 'block';
+            elements.voiceSettings.style.display = isVisible ? 'none' : 'block';
+        }
+        
+        function closeVoiceSettings() {
+            elements.voiceSettings.style.display = 'none';
+        }
+        
+        function updateVoiceSelection() {
+            const voices = speechSynthesis.getVoices();
+            const selectedIndex = elements.voiceSelect.value;
+            
+            if (selectedIndex) {
+                currentVoice = voices[selectedIndex];
+            } else {
+                currentVoice = null;
+            }
+        }
+        
+        function updateVoiceSpeed() {
+            voiceSpeed = parseFloat(elements.voiceSpeedSlider.value);
+            elements.speedDisplay.textContent = voiceSpeed + 'x';
+            elements.voiceSpeedBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i> Speed: ${voiceSpeed}x`;
+        }
+        
+        function updateVoicePitch() {
+            voicePitch = parseFloat(elements.voicePitchSlider.value);
+            elements.pitchDisplay.textContent = voicePitch + 'x';
+        }
+        
+        // Quiz functions
+        async function toggleQuiz() {
+            const isVisible = elements.quizSection.style.display === 'block';
+            
+            if (isVisible) {
+                elements.quizSection.style.display = 'none';
+                elements.quizBtn.innerHTML = '<i class="fas fa-question-circle"></i> Take Quiz';
+                elements.quizBtn.classList.remove('active');
+            } else {
+                await generateQuiz();
+            }
+        }
+        
+        async function generateQuiz() {
+            const topic = elements.resultTopic.textContent;
+            
+            elements.quizContent.innerHTML = '<p>Generating quiz questions...</p>';
+            elements.quizSection.style.display = 'block';
+            elements.quizBtn.innerHTML = '<i class="fas fa-question-circle"></i> Hide Quiz';
+            elements.quizBtn.classList.add('active');
+            
+            try {
+                const response = await fetch('/quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `topic=${encodeURIComponent(topic)}`
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    elements.quizContent.innerHTML = `<p>Error: ${data.error}</p>`;
+                } else {
+                    displayQuiz(data.quiz);
+                }
+            } catch (error) {
+                elements.quizContent.innerHTML = `<p>Error generating quiz: ${error.message}</p>`;
+            }
+        }
+        
+        function displayQuiz(quiz) {
+            currentQuiz = quiz;
+            
+            elements.quizContent.innerHTML = quiz.map((question, index) => `
+                <div class="quiz-question">
+                    <h4>Question ${index + 1}: ${question.question}</h4>
+                    <div class="quiz-options">
+                        ${question.options.map((option, optIndex) => `
+                            <div class="quiz-option" onclick="selectQuizOption(${index}, ${optIndex})">
+                                ${String.fromCharCode(65 + optIndex)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('') + `
+                <button onclick="submitQuiz()" style="margin-top: 20px; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                    <i class="fas fa-check"></i> Submit Quiz
+                </button>
+            `;
+        }
+        
+        function selectQuizOption(questionIndex, optionIndex) {
+            const questionDiv = elements.quizContent.children[questionIndex];
+            const options = questionDiv.querySelectorAll('.quiz-option');
+            
+            // Remove previous selections
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            options[optionIndex].classList.add('selected');
+            
+            // Store the answer
+            if (!currentQuiz[questionIndex].userAnswer) {
+                currentQuiz[questionIndex].userAnswer = String.fromCharCode(65 + optionIndex);
+            } else {
+                currentQuiz[questionIndex].userAnswer = String.fromCharCode(65 + optionIndex);
+            }
+        }
+        
+        function submitQuiz() {
+            if (!currentQuiz) return;
+            
+            let correct = 0;
+            const total = currentQuiz.length;
+            
+            currentQuiz.forEach((question, index) => {
+                if (question.userAnswer === question.correct_answer) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / total) * 100);
+            
+            elements.quizResults.style.display = 'block';
+            elements.quizScore.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <h3>Your Score: ${correct}/${total} (${percentage}%)</h3>
+                    <div style="margin: 20px 0;">
+                        ${percentage >= 80 ? '<i class="fas fa-trophy" style="color: gold; font-size: 2rem;"></i>' : 
+                          percentage >= 60 ? '<i class="fas fa-medal" style="color: silver; font-size: 2rem;"></i>' : 
+                          '<i class="fas fa-redo" style="color: orange; font-size: 2rem;"></i>'}
+                    </div>
+                    <p>${percentage >= 80 ? 'Excellent work!' : 
+                          percentage >= 60 ? 'Good job! Keep learning.' : 
+                          'Keep studying and try again!'}</p>
+                </div>
+            `;
+            
+            elements.quizResults.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Bookmark functions
+        function toggleBookmark() {
+            const topic = elements.resultTopic.textContent;
+            const isBookmarked = bookmarkedLessons.includes(topic);
+            
+            if (isBookmarked) {
+                bookmarkedLessons = bookmarkedLessons.filter(lesson => lesson !== topic);
+                elements.bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Bookmark';
+                elements.bookmarkBtn.classList.remove('active');
+            } else {
+                bookmarkedLessons.push(topic);
+                elements.bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Bookmarked';
+                elements.bookmarkBtn.classList.add('active');
+            }
+            
+            localStorage.setItem('bookmarkedLessons', JSON.stringify(bookmarkedLessons));
+        }
+        
+        function updateBookmarkButton(topic) {
+            const isBookmarked = bookmarkedLessons.includes(topic);
+            
+            if (isBookmarked) {
+                elements.bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Bookmarked';
+                elements.bookmarkBtn.classList.add('active');
+            } else {
+                elements.bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Bookmark';
+                elements.bookmarkBtn.classList.remove('active');
+            }
+        }
+        
+        function loadBookmarks() {
+            // You can implement a bookmarks display feature here
+            console.log('Bookmarked lessons:', bookmarkedLessons);
+        }
+        
+        // Utility functions
+        function showLoading() {
+            elements.resultSection.style.display = 'none';
+            elements.errorMessage.style.display = 'none';
+            elements.loading.style.display = 'block';
+            
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                }
+                elements.progressFill.style.width = progress + '%';
+            }, 500);
+        }
+        
+        function showError(message) {
+            elements.loading.style.display = 'none';
+            elements.errorMessage.style.display = 'block';
+            elements.errorMessage.querySelector('p').textContent = message;
+        }
+        
+        function newLesson() {
+            elements.resultSection.style.display = 'none';
+            elements.quizSection.style.display = 'none';
+            elements.topicInput.value = '';
+            elements.topicInput.focus();
+            stopVoice();
+        }
+    </script>
+</body>
+</html>
