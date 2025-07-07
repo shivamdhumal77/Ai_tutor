@@ -1,0 +1,154 @@
+/* main.css - Global styles for AI Tutor */
+
+body {
+    font-family: 'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif;
+    background: linear-gradient(135deg, #f3f6fa 0%, #f0f4f8 100%);
+    color: #222;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 3rem 1.5rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+header h1 {
+    font-size: 3.5rem;
+    color: #2563eb;
+    margin-bottom: 0.3em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.subtitle {
+    color: #4f8cff;
+    font-size: 1.3rem;
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.features-list {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+.features-list h2 {
+    color: #2a3a4b;
+    margin-bottom: 1.2em;
+    text-align: center;
+}
+.features-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.features-list li {
+    margin: 0.7em 0;
+}
+.features-list a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: color 0.2s;
+}
+.features-list a:hover, .nav-feature-link.active {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+.main-nav {
+    background: #fff;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    padding: 1.2em 2em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.main-nav .logo {
+    font-size: 1.5em;
+    color: #2563eb;
+    font-weight: bold;
+    text-decoration: none;
+}
+.main-nav .nav-list {
+    display: flex;
+    gap: 1.2em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.main-nav .nav-list li {
+    margin: 0;
+}
+.main-nav .nav-list a {
+    color: #2a3a4b;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1em;
+    padding: 0.3em 0.7em;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+.main-nav .nav-list a:hover, .main-nav .nav-list a.active {
+    background: #e0e7ef;
+    color: #2563eb;
+}
+
+.main-content {
+    min-height: 60vh;
+    padding: 2em 0 2em 0;
+}
+
+.main-footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 2rem 0;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .main-container {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+}

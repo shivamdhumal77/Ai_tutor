@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent-Community Engagement Portal</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/features.css">
+</head>
+<body>
+    <div class="feature-container">
+        <h1>Parent-Community Engagement Portal</h1>
+        <form class="feature-form" data-feature-key="parent_engagement">
+            <div class="form-group">
+                <label for="student_progress">Student Progress <span class="hint">(summary or JSON)</span></label>
+                <textarea id="student_progress" name="student_progress" rows="3" required placeholder='{"math": "improved", "reading": "needs attention"}'></textarea>
+            </div>
+            <div class="form-group">
+                <label for="upcoming_events">Upcoming Events <span class="hint">(comma separated or JSON)</span></label>
+                <input id="upcoming_events" name="upcoming_events" type="text" required placeholder='Parent-Teacher Meeting, Science Fair'>
+            </div>
+            <button type="submit" class="btn-primary">Generate Parent Update</button>
+            <button class="autofill-demo btn-secondary" type="button">Demo</button>
+        </form>
+        <div class="feature-output"></div>
+    </div>
+    <script src="/static/css/js/feature.js"></script>
+    <script src="/static/css/js/main..js"></script>
+</body>
+</html>

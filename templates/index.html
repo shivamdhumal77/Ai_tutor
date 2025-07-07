@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tutor - Intelligent Education Platform</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/features.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>AI Tutor</h1>
+            <p class="subtitle">Transform Your Teaching with Intelligent AI Agents</p>
+        </header>
+        
+        <section class="search-section" style="margin-bottom:2.5em;text-align:center;">
+            <form id="edu-search-form" style="display:inline-flex;align-items:center;gap:0.5em;max-width:480px;width:100%;">
+                <input type="text" id="edu-search-input" placeholder="Search any academic topic..." style="flex:1;padding:0.7em 1em;border-radius:8px;border:1px solid #b6c6e3;font-size:1.1em;" required />
+                <button type="submit" style="padding:0.7em 1.3em;border-radius:8px;background:#2563eb;color:#fff;border:none;font-weight:500;cursor:pointer;">Search</button>
+            </form>
+            <div id="edu-search-result" style="margin-top:1.2em;max-width:600px;margin-left:auto;margin-right:auto;text-align:left;font-size:1.13em;color:#222;"></div>
+        </section>
+
+        <section class="features-grid">
+            <article class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Multi-Grade Learning</h3>
+                <p>Seamlessly synthesize lessons across different grade levels, adapting content for diverse learning needs.</p>
+                <a href="/feature/multi_grade">Get Started</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🎤</div>
+                <h3>Voice Assistant</h3>
+                <p>Your intelligent classroom companion for voice-powered teaching assistance and support.</p>
+                <a href="/feature/voice_assistant">Try Now</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Adaptive Content</h3>
+                <p>Dynamic content that adjusts difficulty based on student performance and understanding.</p>
+                <a href="/feature/adaptive_content">Explore</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🌏</div>
+                <h3>Cultural Context</h3>
+                <p>Enrich lessons with culturally relevant examples and perspectives.</p>
+                <a href="/feature/cultural_context">Learn More</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">❓</div>
+                <h3>Doubt Resolution</h3>
+                <p>Instant answers to student questions with smart PDF and image-based responses.</p>
+                <a href="/feature/doubt_resolution">Resolve Doubts</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Smart Assessments</h3>
+                <p>Generate personalized assessments that adapt to student learning patterns.</p>
+                <a href="/feature/assessment">Create Now</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Peer Teaching</h3>
+                <p>Foster collaborative learning through AI-guided peer teaching sessions.</p>
+                <a href="/feature/peer_teaching">Start Teaching</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                <h3>Parent Engagement</h3>
+                <p>Bridge the gap between classroom and home with intelligent parent communication.</p>
+                <a href="/feature/parent_engagement">Connect</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Resource Planner</h3>
+                <p>Optimize teaching resources and materials with AI-powered planning.</p>
+                <a href="/feature/resource_planner">Plan Now</a>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Smart Calendar</h3>
+                <p>Intelligent scheduling and calendar management for better time optimization.</p>
+                <a href="/feature/multi_calendar">Schedule</a>
+            </article>
+        </section>
+
+        <footer class="main-footer">
+            <p>&copy; 2024 AI Tutor | Powered by Gemini AI</p>
+        </footer>
+    </div>
+    <script src="/static/css/js/main..js"></script>
+    <style>
+    .typing-indicator { display:inline-block; vertical-align:middle; }
+    .typing-dot {
+        display:inline-block;
+        width:8px; height:8px;
+        margin:0 2px;
+        background:#2563eb;
+        border-radius:50%;
+        animation: blink 1.2s infinite both;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+        0%, 80%, 100% { opacity: 0.2; }
+        40% { opacity: 1; }
+    }
+    .edu-images-row {
+        display:flex;gap:0.7em;margin-bottom:0.7em;justify-content:center;
+    }
+    .edu-images-row img {
+        max-width:90px;max-height:70px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    </style>
+    <script>
+    // Academic search bar logic with animation and image placeholder
+    const eduForm = document.getElementById('edu-search-form');
+    const eduInput = document.getElementById('edu-search-input');
+    const eduResult = document.getElementById('edu-search-result');
+    if (eduForm && eduInput && eduResult) {
+        eduForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const query = eduInput.value.trim();
+            if (!query) return;
+            // Show typing animation
+            eduResult.innerHTML = '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+            // Fetch images (Wikipedia first, fallback to Unsplash)
+            let imagesHtml = '';
+            try {
+                // Wikipedia API for main image
+                const wikiApi = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+                let imgUrl = '';
+                let imgAlt = query;
+                let wikiLink = `https://en.wikipedia.org/wiki/${encodeURIComponent(query)}`;
+                let gotWiki = false;
+                await fetch(wikiApi)
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.thumbnail && d.thumbnail.source) {
+                            imgUrl = d.thumbnail.source;
+                            imgAlt = d.title || query;
+                            gotWiki = true;
+                        }
+                    });
+                if (!imgUrl) {
+                    // Fallback to Unsplash
+                    imgUrl = `https://source.unsplash.com/160x120/?${encodeURIComponent(query)},education`;
+                }
+                // DuckDuckGo image search link
+                const ddgUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&iax=images&ia=images`;
+                imagesHtml = `<div class='edu-images-row'><img src='${imgUrl}' alt='${imgAlt}'></div>` +
+                    (gotWiki ? `<div style='text-align:center;margin-bottom:0.7em;'><a href='${wikiLink}' target='_blank' rel='noopener' style='color:#2563eb;font-weight:500;text-decoration:underline;'>View on Wikipedia</a></div>` : '') +
+                    `<div style='text-align:center;margin-bottom:0.7em;'><a href='${ddgUrl}' target='_blank' rel='noopener' style='color:#2563eb;font-weight:500;text-decoration:underline;'>View more images</a></div>`;
+            } catch {}
+            // Fetch answer
+            try {
+                const res = await fetch('/feature/voice_assistant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ transcript: query })
+                });
+                const data = await res.json();
+                // Typing effect
+                let answer = (data && data.response) ? data.response : '<span style="color:#f44336;">No academic answer found.</span>';
+                // Try to format answer as detailed points if possible
+                function formatAsPoints(text) {
+                    // If JSON, extract response_text
+                    try {
+                        const obj = JSON.parse(text);
+                        if (obj.response_text) text = obj.response_text;
+                    } catch {}
+                    // Remove quotes, Markdown bold/italic, and extra whitespace
+                    text = text.replace(/^"|"$/g, '').replace(/\*\*|\*/g, '').replace(/\\n/g, '\n');
+                    // Remove any JSON keys if present
+                    text = text.replace(/\"?\w+\"?\s*:\s*/g, '');
+                    // Replace <br> tags with double line breaks for paragraphs
+                    text = text.replace(/<br\s*\/?>/gi, '\n\n');
+                    // Collapse multiple newlines to exactly two (for paragraphs)
+                    text = text.replace(/(\n\s*){3,}/g, '\n\n');
+                    // Split into paragraphs
+                    let paras = text.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+                    if (paras.length > 1) {
+                        return paras.map(p => `<div style='margin-bottom:1em;'>${p}</div>`).join('');
+                    }
+                    return text;
+                }
+                answer = formatAsPoints(answer);
+                eduResult.innerHTML = imagesHtml + '<div id="edu-typing"></div>';
+                const typingDiv = document.getElementById('edu-typing');
+                let i = 0;
+                function typeChar() {
+                    if (i < answer.length) {
+                        typingDiv.innerHTML += answer[i];
+                        i++;
+                        setTimeout(typeChar, 8);
+                    }
+                }
+                setTimeout(typeChar, 400); // Delay to mimic thinking
+            } catch {
+                eduResult.innerHTML = '<span style="color:#f44336;">Error: Could not get answer.</span>';
+            }
+        });
+    }
+    </script>
+</body>
+</html>

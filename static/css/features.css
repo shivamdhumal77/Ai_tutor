@@ -1,0 +1,328 @@
+/* Features Grid Layout and Cards */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #2563eb, #4f8cff);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-card h3 {
+    color: #2a3a4b;
+    font-size: 1.25rem;
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 1.25rem 0;
+}
+
+.feature-card a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.feature-card a:hover {
+    color: #1e40af;
+}
+
+.feature-card a::after {
+    content: '→';
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.feature-card a:hover::after {
+    transform: translateX(4px);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #f0f7ff;
+    color: #2563eb;
+    font-size: 1.5rem;
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Typing indicator animation */
+.typing-indicator {
+  display: inline-block;
+  min-width: 36px;
+  height: 22px;
+  vertical-align: middle;
+}
+.typing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 2px;
+  background: #bdbdbd;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: typingBlink 1.2s infinite both;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBlink {
+  0%, 80%, 100% { opacity: 0.5; }
+  40% { opacity: 1; }
+}
+.chat-container {
+    max-width: 700px;
+    margin: 40px auto 0 auto;
+    background: #e5ddd5;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    height: 70vh;
+}
+.chat-header {
+    background: #075e54;
+    color: #fff;
+    padding: 1.2em 1.5em;
+    border-radius: 16px 16px 0 0;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.chat-messages {
+    flex: 1;
+    padding: 1.5em 1em 1em 1em;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.chat-bubble {
+    display: inline-block;
+    padding: 0.8em 1.2em;
+    border-radius: 18px;
+    max-width: 80%;
+    font-size: 1.05em;
+    word-break: break-word;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.chat-bubble.user {
+    background: #dcf8c6;
+    align-self: flex-end;
+    color: #222;
+}
+.chat-bubble.assistant {
+    background: #fff;
+    align-self: flex-start;
+    color: #222;
+}
+.chat-input-row {
+    display: flex;
+    padding: 1em;
+    background: #f7f7f7;
+    border-radius: 0 0 16px 16px;
+    gap: 0.5em;
+}
+.chat-input-row textarea {
+    flex: 1;
+    border-radius: 8px;
+    border: 1px solid #d0d7de;
+    padding: 0.7em 1em;
+    font-size: 1em;
+    resize: none;
+    min-height: 2.5em;
+    max-height: 6em;
+}
+.chat-input-row button {
+    background: #25d366;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7em 1.5em;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.chat-input-row button:hover {
+    background: #128c7e;
+}
+/* features.css - Styles for AI Tutor feature pages */
+
+.feature-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 2.5rem 2rem 2rem 2rem;
+}
+
+.feature-container h1, .feature-container h2 {
+    text-align: center;
+    color: #2a3a4b;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2a3a4b;
+}
+
+.form-group .hint {
+    font-size: 0.9em;
+    color: #888;
+    margin-left: 0.5em;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.7em 1em;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #f8fafc;
+    transition: border 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #4f8cff;
+    outline: none;
+}
+
+.btn-primary {
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    padding: 0.7em 1.5em;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 0.5em;
+    transition: background 0.2s;
+}
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: #e0e7ef;
+    color: #2a3a4b;
+    border: none;
+    padding: 0.7em 1.5em;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+.feature-output {
+    margin-top: 2rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1.2rem;
+    min-height: 60px;
+    font-size: 1.05em;
+    color: #222;
+    word-break: break-word;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.feature-output pre {
+    background: #f1f5f9;
+    border-radius: 6px;
+    padding: 1em;
+    font-size: 0.98em;
+    overflow-x: auto;
+}
+.feature-loader {
+    display: block;
+    margin: 1.5em auto 0 auto;
+    text-align: center;
+    color: #4f8cff;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+.lesson-plan, .assessment, .resource-plan, .parent-update, .explanation {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-size: 1.05em;
+    color: #2a3a4b;
+}
+.output-container {
+    margin-top: 2em;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaptive Content Difficulty Branching</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/features.css">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-white min-h-screen flex flex-col items-center py-8">
+  <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6 flex flex-col gap-4">
+    <h1 class="text-lg font-bold text-blue-800 mb-2">Adaptive Content</h1>
+    <form id="adaptive-form" class="flex flex-col gap-2">
+      <input type="text" name="content" id="content" class="border border-blue-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Topic (e.g. Fractions)" required>
+      <textarea name="performance_data" id="performance_data" rows="2" class="border border-blue-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder='{"correct": 2, "total": 5, "time": 120}' required></textarea>
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">Get Adaptive Content</button>
+    </form>
+    <div id="adaptive-output" class="mt-4 text-blue-900 text-sm"></div>
+  </div>
+  <script>
+    const form = document.getElementById('adaptive-form');
+    const output = document.getElementById('adaptive-output');
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      output.innerHTML = '<span class="text-blue-500 animate-pulse">AI is thinking...</span>';
+      const content = document.getElementById('content').value;
+      const performance_data = document.getElementById('performance_data').value;
+      try {
+        const res = await fetch('/feature/adaptive_content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content, performance_data })
+        });
+        const data = await res.json();
+        if (data && data.response) {
+          let txt = data.response;
+          try {
+            if (typeof txt === 'string' && txt.startsWith('```json')) {
+              txt = txt.replace(/^```json[\s\n]*/i, '').replace(/```$/, '').trim();
+            }
+            const obj = JSON.parse(txt);
+            output.innerHTML = `
+              <div class="mb-2"><span class="font-semibold">Simplified:</span> <span class="block bg-blue-50 rounded p-2 mt-1">${obj.simplified || ''}</span></div>
+              <div class="mb-2"><span class="font-semibold">Standard:</span> <span class="block bg-blue-50 rounded p-2 mt-1">${obj.standard || ''}</span></div>
+              <div class="mb-2"><span class="font-semibold">Advanced:</span> <span class="block bg-blue-50 rounded p-2 mt-1">${obj.advanced || ''}</span></div>
+            `;
+          } catch {
+            output.innerHTML = `<div class="bg-red-50 text-red-700 rounded p-2">${txt}</div>`;
+          }
+        } else {
+          output.innerHTML = '<div class="bg-red-50 text-red-700 rounded p-2">No response from AI.</div>';
+        }
+      } catch (err) {
+        output.innerHTML = '<div class="bg-red-50 text-red-700 rounded p-2">Error: Could not reach the AI.</div>';
+      }
+    });
+  </script>
+</body>
+</html>

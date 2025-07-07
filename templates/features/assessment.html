@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Assessment Generator</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/features.css">
+</head>
+<body>
+    <div class="feature-container">
+        <h1>Smart Assessment Generator</h1>
+        <form class="feature-form" data-feature-key="assessment">
+            <div class="form-group">
+                <label for="topic">Topic</label>
+                <input id="topic" name="topic" type="text" required placeholder="e.g. Fractions">
+            </div>
+            <div class="form-group">
+                <label for="difficulty">Difficulty</label>
+                <select id="difficulty" name="difficulty" required>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="question_types">Question Types <span class="hint">(comma separated)</span></label>
+                <input id="question_types" name="question_types" type="text" required placeholder="mcq, short_answer, essay">
+            </div>
+            <button type="submit" class="btn-primary">Generate Assessment</button>
+            <button class="autofill-demo btn-secondary" type="button">Demo</button>
+        </form>
+
+        <hr style="margin:2em 0;">
+        <h2>Upload Notes & Flashcards</h2>
+        <form id="resource-upload-form" enctype="multipart/form-data">
+            <div class="form-row">
+                <select name="resource_type" required>
+                    <option value="note">Note (PDF/Image)</option>
+                    <option value="flashcard">Flashcard (Image)</option>
+                </select>
+                <select name="grade" id="upload-grade" required>
+                    <option value="">Grade</option>
+                </select>
+                <select name="subject" id="upload-subject" required>
+                    <option value="">Subject</option>
+                </select>
+                <input name="topic" type="text" required placeholder="Topic (e.g. Fractions)">
+                <input name="file" type="file" required>
+                <button type="submit" class="btn-primary">Upload</button>
+            </div>
+        </form>
+        <div id="upload-status"></div>
+
+        <hr style="margin:2em 0;">
+        <h2>Retrieve Notes & Flashcards</h2>
+        <form id="resource-query-form">
+            <div class="form-row">
+                <select name="resource_type">
+                    <option value="note">Note</option>
+                    <option value="flashcard">Flashcard</option>
+                </select>
+                <select name="grade" id="query-grade">
+                    <option value="">Grade</option>
+                </select>
+                <select name="subject" id="query-subject">
+                    <option value="">Subject</option>
+                </select>
+                <input name="topic" type="text" placeholder="Topic (e.g. Fractions)">
+                <button type="submit" class="btn-primary">Search</button>
+            </div>
+        </form>
+        <div id="resource-results"></div>
+
+        <div class="feature-output"></div>
+    </div>
+    <script src="/static/css/js/feature.js"></script>
+    <script src="/static/css/js/main..js"></script>
+    <script>
+    // Populate grade and subject dropdowns
+    async function populateFilters() {
+        const res = await fetch('/feature/assessment/get_resource_filters');
+        const data = await res.json();
+        if (data.success) {
+            const gradeOptions = data.grades.map(g => `<option value="${g}">${g}</option>`).join('');
+            const subjectOptions = data.subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+            document.getElementById('upload-grade').innerHTML = '<option value="">Grade</option>' + gradeOptions;
+            document.getElementById('upload-subject').innerHTML = '<option value="">Subject</option>' + subjectOptions;
+            document.getElementById('query-grade').innerHTML = '<option value="">Grade</option>' + gradeOptions;
+            document.getElementById('query-subject').innerHTML = '<option value="">Subject</option>' + subjectOptions;
+        }
+    }
+    populateFilters();
+
+    // Resource upload
+    document.getElementById('resource-upload-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+        document.getElementById('upload-status').textContent = 'Uploading...';
+        const res = await fetch('/feature/assessment/upload_resource', {
+            method: 'POST',
+            body: data
+        });
+        const result = await res.json();
+        if (result.success) {
+            document.getElementById('upload-status').textContent = 'Upload successful!';
+            form.reset();
+            populateFilters(); // Refresh dropdowns
+        } else {
+            document.getElementById('upload-status').textContent = 'Error: ' + (result.error || 'Unknown error');
+        }
+    });
+    // Resource query
+    document.getElementById('resource-query-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const params = new URLSearchParams(new FormData(form));
+        document.getElementById('resource-results').textContent = 'Searching...';
+        const res = await fetch('/feature/assessment/get_resources?' + params.toString());
+        const result = await res.json();
+        if (result.success && result.results.length) {
+            let html = '<ul class="resource-list">';
+            for (const entry of result.results) {
+                let url = `/uploads/${entry.type === 'note' ? 'notes' : 'flashcards'}/${entry.filename}`;
+                html += `<li><b>${entry.type}</b> | Grade: ${entry.grade} | Subject: ${entry.subject} | Topic: ${entry.topic} <br>`;
+                if (entry.filename.match(/\.(pdf)$/i)) {
+                    html += `<a href="${url}" target="_blank">View PDF</a>`;
+                } else if (entry.filename.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                    html += `<img src="${url}" alt="${entry.filename}" style="max-width:180px;max-height:120px;display:block;margin:0.5em 0;">`;
+                } else {
+                    html += `<a href="${url}" target="_blank">Download</a>`;
+                }
+                html += '</li>';
+            }
+            html += '</ul>';
+            document.getElementById('resource-results').innerHTML = html;
+        } else {
+            document.getElementById('resource-results').textContent = 'No resources found.';
+        }
+    });
+
+    // Assistant integration: window.assistantGetResource(grade, subject, topic, type)
+    window.assistantGetResource = async function(grade, subject, topic, resource_type) {
+        const params = new URLSearchParams({grade, subject, topic, resource_type});
+        const res = await fetch('/feature/assessment/get_resources?' + params.toString());
+        const result = await res.json();
+        if (result.success && result.results.length) {
+            // Return the first matching resource (can be extended)
+            return result.results[0];
+        }
+        return null;
+    }
+    </script>
+</body>
+</html>

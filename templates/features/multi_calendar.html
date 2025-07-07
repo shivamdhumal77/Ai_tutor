@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Multi-Calendar / Scheduler</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/features.css">
+</head>
+<body>
+    <div class="feature-container max-w-3xl mx-auto p-4">
+      <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-pink-400 to-purple-400 mb-6 animate-fade-in drop-shadow-lg" style="font-family: 'Baloo 2', cursive; letter-spacing: 1px;">AI Course Scheduler & Calendar</h1>
+      <form id="course-form" class="bg-gradient-to-br from-blue-50 via-pink-50 to-purple-50/80 backdrop-blur-2xl rounded-[2.5rem] p-8 flex flex-col gap-6 mb-8 shadow-2xl animate-slide-in border-0">
+        <input type="text" id="course-name" name="course_name" class="bg-white/60 border-0 rounded-full px-6 py-3 text-lg shadow focus:ring-2 focus:ring-blue-300 transition placeholder:text-blue-400" placeholder="Course Name (e.g. Creative Coding)" required style="font-family: 'Baloo 2', cursive;">
+        <textarea id="topics" name="topics" rows="2" class="bg-white/60 border-0 rounded-3xl px-6 py-3 text-base shadow focus:ring-2 focus:ring-pink-200 transition placeholder:text-pink-400" placeholder="Topics (comma separated, e.g. Animation, Generative Art, Web Apps)" required style="font-family: 'Baloo 2', cursive;"></textarea>
+        <div class="flex gap-4">
+          <input type="date" id="start-date" name="start_date" class="bg-white/60 border-0 rounded-full px-6 py-3 flex-1 shadow focus:ring-2 focus:ring-blue-200 transition" required>
+          <input type="date" id="end-date" name="end_date" class="bg-white/60 border-0 rounded-full px-6 py-3 flex-1 shadow focus:ring-2 focus:ring-pink-200 transition" required>
+        </div>
+        <input type="text" id="constraints" name="constraints" class="bg-white/60 border-0 rounded-full px-6 py-3 text-base shadow focus:ring-2 focus:ring-purple-200 transition placeholder:text-purple-400" placeholder="Constraints (e.g. No events on weekends)">
+        <button type="submit" class="bg-gradient-to-r from-blue-400 via-pink-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition text-lg tracking-wide">Generate Plan & Calendar</button>
+      </form>
+      <div class="flex flex-col md:flex-row gap-8 animate-fade-in">
+        <div class="flex-1">
+          <div id="ai-overview" class="mb-6 transition-all duration-500"></div>
+          <div class="w-full bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 rounded-full h-4 mb-6 overflow-hidden shadow-inner">
+            <div id="progress-bar" class="bg-gradient-to-r from-blue-400 via-pink-400 to-purple-400 h-4 rounded-full transition-all duration-700" style="width:0%"></div>
+          </div>
+          <button id="ask-assistant" class="bg-gradient-to-r from-blue-50 via-pink-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-blue-700 font-bold py-3 px-6 rounded-full transition w-full mb-6 shadow-lg border-0">Ask Assistant about this plan</button>
+        </div>
+        <div class="flex-1 relative">
+          <div id="calendar" class="bg-white/70 rounded-[2rem] shadow-2xl p-4 animate-slide-in border-0"></div>
+          <button id="add-event-btn" class="absolute bottom-6 right-6 bg-gradient-to-br from-blue-400 via-pink-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-4xl shadow-xl transition-all duration-300 z-10 animate-bounce border-0">+</button>
+        </div>
+      </div>
+
+      <!-- Modal for adding/editing events -->
+      <div id="event-modal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+        <div class="bg-gradient-to-br from-blue-50 via-pink-50 to-purple-50 rounded-[2rem] p-8 w-full max-w-sm shadow-2xl animate-fade-in">
+          <h2 class="text-xl font-extrabold mb-4 text-blue-700" style="font-family: 'Baloo 2', cursive;">Add/Edit Event</h2>
+          <input type="text" id="modal-title" class="bg-white/60 border-0 rounded-full px-6 py-3 w-full mb-3 text-lg shadow focus:ring-2 focus:ring-blue-200 transition placeholder:text-blue-400" placeholder="Topic/Title" style="font-family: 'Baloo 2', cursive;">
+          <input type="date" id="modal-date" class="bg-white/60 border-0 rounded-full px-6 py-3 w-full mb-3 text-base shadow focus:ring-2 focus:ring-pink-200 transition">
+          <div class="flex gap-3 mt-2">
+            <button id="save-event" class="bg-gradient-to-r from-blue-400 via-pink-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-6 rounded-full flex-1 shadow-lg transition">Save</button>
+            <button id="close-modal" class="bg-gradient-to-r from-blue-50 via-pink-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 text-blue-700 font-bold py-3 px-6 rounded-full flex-1 transition">Cancel</button>
+          </div>
+        </div>
+      </div>
+    <!-- Google Fonts for curvy/fancy look -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+    </div>
+    <!-- FullCalendar.js (for interactive calendar UI) -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <style>
+      .animate-fade-in { animation: fadeIn 0.7s; }
+      .animate-slide-in { animation: slideIn 0.7s; }
+      .animate-bounce { animation: bounce 1.2s infinite alternate; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let calendar;
+      const calendarEl = document.getElementById('calendar');
+      const aiOverview = document.getElementById('ai-overview');
+      const askAssistantBtn = document.getElementById('ask-assistant');
+      const progressBar = document.getElementById('progress-bar');
+      const addEventBtn = document.getElementById('add-event-btn');
+      const eventModal = document.getElementById('event-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalDate = document.getElementById('modal-date');
+      const saveEventBtn = document.getElementById('save-event');
+      const closeModalBtn = document.getElementById('close-modal');
+      let editingEvent = null;
+
+      // Initialize FullCalendar with popover and animation
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: 400,
+        headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+        events: [],
+        editable: true,
+        selectable: true,
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          modalTitle.value = info.event.title;
+          modalDate.value = info.event.startStr;
+          eventModal.classList.remove('hidden');
+          editingEvent = info.event;
+        },
+        dateClick: function(info) {
+          modalTitle.value = '';
+          modalDate.value = info.dateStr;
+          eventModal.classList.remove('hidden');
+          editingEvent = null;
+        },
+        eventDidMount: function(info) {
+          info.el.classList.add('transition-all', 'duration-300', 'hover:scale-105', 'hover:shadow-lg');
+        }
+      });
+      calendar.render();
+
+      // Floating + button to add event
+      addEventBtn.onclick = function() {
+        modalTitle.value = '';
+        modalDate.value = '';
+        eventModal.classList.remove('hidden');
+        editingEvent = null;
+      };
+
+      // Modal save/cancel
+      saveEventBtn.onclick = function() {
+        if (modalTitle.value && modalDate.value) {
+          if (editingEvent) {
+            editingEvent.setProp('title', modalTitle.value);
+            editingEvent.setStart(modalDate.value);
+          } else {
+            calendar.addEvent({ title: modalTitle.value, start: modalDate.value, backgroundColor: '#2563eb', borderColor: '#2563eb' });
+          }
+          eventModal.classList.add('hidden');
+        }
+      };
+      closeModalBtn.onclick = function() {
+        eventModal.classList.add('hidden');
+      };
+
+      // Animate course overview and progress
+      function animateProgress(topicsDone, totalTopics) {
+        const percent = totalTopics ? Math.round((topicsDone/totalTopics)*100) : 0;
+        progressBar.style.width = percent + '%';
+      }
+
+      document.getElementById('course-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        aiOverview.innerHTML = '<span class="text-blue-500 animate-pulse">AI is planning your course...</span>';
+        const courseName = document.getElementById('course-name').value;
+        const topics = document.getElementById('topics').value.split(',').map(t => t.trim()).filter(Boolean);
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        const constraints = document.getElementById('constraints').value;
+
+        // Call backend to get AI-generated plan (replace with real endpoint)
+        // For now, mock a plan
+        let plan = [];
+        let overview = `<div class="mb-2 font-semibold">Course: ${courseName}</div><ul class="list-disc ml-5">`;
+        let current = new Date(startDate);
+        const end = new Date(endDate);
+        let i = 0;
+        while (current <= end && i < topics.length) {
+          plan.push({ title: topics[i], start: current.toISOString().slice(0,10), backgroundColor: '#38bdf8', borderColor: '#38bdf8' });
+          overview += `<li class='animate-fade-in'>${topics[i]}: <span class='text-gray-600'>${current.toISOString().slice(0,10)}</span></li>`;
+          current.setDate(current.getDate() + 7); // 1 week per topic
+          i++;
+        }
+        overview += '</ul>';
+        aiOverview.innerHTML = overview;
+        calendar.removeAllEvents();
+        calendar.addEventSource(plan);
+        animateProgress(0, topics.length);
+      });
+
+      askAssistantBtn.onclick = function() {
+        alert('Assistant: Here you can integrate the AI assistant to answer about the whole plan.');
+      };
+    });
+    </script>
+</body>
+</html>

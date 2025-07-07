@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Powered Classroom Assistant</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/features.css">
+    <style>
+    .resource-bubble {
+        background: #f0f7ff;
+        border-radius: 14px;
+        padding: 0.7em 1em;
+        margin: 0.5em 0;
+        max-width: 80%;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        display: inline-block;
+        position: relative;
+    }
+    .resource-bubble img {
+        max-width: 180px;
+        max-height: 120px;
+        border-radius: 8px;
+        display: block;
+        margin: 0.5em 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .resource-bubble a {
+        color: #2563eb;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+    .carousel {
+        display: flex;
+        gap: 1em;
+        overflow-x: auto;
+        padding: 0.5em 0;
+        margin-bottom: 0.5em;
+    }
+    .carousel::-webkit-scrollbar { height: 6px; background: #e0e7ef; }
+    .carousel::-webkit-scrollbar-thumb { background: #b6c6e3; border-radius: 3px; }
+    .modal-bg {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(30,40,60,0.18);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s;
+    }
+    .modal {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+        padding: 2em 2em 1.5em 2em;
+        min-width: 320px;
+        max-width: 95vw;
+        animation: fadeInUp 0.25s;
+    }
+    .modal h3 { margin-top: 0; }
+    .modal .form-row { display: flex; flex-wrap: wrap; gap: 0.7em; margin-bottom: 1em; }
+    .modal input, .modal select { padding: 0.4em 0.7em; border-radius: 6px; border: 1px solid #cbd5e1; }
+    .modal button { padding: 0.4em 1.2em; border-radius: 6px; border: none; background: #2563eb; color: #fff; font-weight: 500; cursor: pointer; }
+    .modal .close-modal { background: #e0e7ef; color: #222; margin-left: 1em; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none; } }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Voice-Powered Classroom Assistant</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <form class="chat-input-row" id="chat-form" style="display:flex;align-items:center;gap:0.5em;">
+            <button type="button" id="attach-fab" title="Attach file" aria-label="Attach resource" style="background:none;border:none;padding:0 0.5em 0 0;cursor:pointer;font-size:1.3em;line-height:1;color:#2563eb;display:flex;align-items:center;">
+                <span>📎</span>
+            </button>
+            <textarea id="chat-input" name="transcript" rows="1" required placeholder="Type your message..." style="flex:1;"></textarea>
+            <button type="submit" style="margin-left:0.2em;">Send</button>
+        </form>
+    </div>
+    <div id="modal-bg" class="modal-bg" style="display:none;">
+        <div class="modal">
+            <h3>Upload Resource</h3>
+            <form id="modal-upload-form">
+                <div class="form-row">
+                    <select name="resource_type" required>
+                        <option value="note">Note (PDF/Image)</option>
+                        <option value="flashcard">Flashcard (Image)</option>
+                    </select>
+                    <input name="grade" id="modal-grade" type="text" required placeholder="Grade (e.g. 5)">
+                    <input name="subject" id="modal-subject" type="text" required placeholder="Subject (e.g. Math)">
+                    <input name="topic" id="modal-topic" type="text" required placeholder="Topic (e.g. Fractions)">
+                    <input name="file" type="file" required>
+                </div>
+                <div class="form-row">
+                    <button type="submit">Upload</button>
+                    <button type="button" class="close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/static/css/js/main..js"></script>
+    <script>
+    // Chat UI logic
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const attachFab = document.getElementById('attach-fab');
+    const modalBg = document.getElementById('modal-bg');
+    const modalForm = document.getElementById('modal-upload-form');
+    const closeModalBtn = document.querySelector('.close-modal');
+    let lastContext = { grade: '', subject: '', topic: '' };
+
+    function appendMessage(role, text, typing=false) {
+        const msg = document.createElement('div');
+        msg.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'assistant');
+        if (typing) {
+            msg.innerHTML = `<span class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></span>`;
+        } else if (typeof text === 'object' && text !== null) {
+            if (text.response_text) {
+                msg.innerText = text.response_text;
+            } else {
+                msg.innerText = JSON.stringify(text, null, 2);
+            }
+        } else {
+            msg.innerText = text;
+        }
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return msg;
+    }
+
+    // WhatsApp-style resource bubble
+    function appendResourceBubble(entry) {
+        const msg = document.createElement('div');
+        msg.className = 'resource-bubble';
+        let html = `<b>${entry.type.charAt(0).toUpperCase() + entry.type.slice(1)}</b> | Grade: ${entry.grade} | Subject: ${entry.subject} | Topic: ${entry.topic}<br>`;
+        let url = `/uploads/${entry.type === 'note' ? 'notes' : 'flashcards'}/${entry.filename}`;
+        if (entry.filename.match(/\.(pdf)$/i)) {
+            html += `<a href="${url}" target="_blank">View PDF</a>`;
+        } else if (entry.filename.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            html += `<img src="${url}" alt="${entry.filename}">`;
+        } else {
+            html += `<a href="${url}" target="_blank">Download</a>`;
+        }
+        msg.innerHTML = html;
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Carousel for multiple images/flashcards
+    function appendResourceCarousel(entries) {
+        const carousel = document.createElement('div');
+        carousel.className = 'carousel';
+        for (const entry of entries) {
+            const card = document.createElement('div');
+            card.className = 'resource-bubble';
+            let html = `<b>${entry.type.charAt(0).toUpperCase() + entry.type.slice(1)}</b><br>`;
+            let url = `/uploads/${entry.type === 'note' ? 'notes' : 'flashcards'}/${entry.filename}`;
+            if (entry.filename.match(/\.(pdf)$/i)) {
+                html += `<a href="${url}" target="_blank">View PDF</a>`;
+            } else if (entry.filename.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                html += `<img src="${url}" alt="${entry.filename}">`;
+            } else {
+                html += `<a href="${url}" target="_blank">Download</a>`;
+            }
+            card.innerHTML = html;
+            carousel.appendChild(card);
+        }
+        chatMessages.appendChild(carousel);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Typing animation for assistant
+    function typeText(msgElem, text, delay=18) {
+        msgElem.innerHTML = '';
+        let i = 0;
+        function typeChar() {
+            if (i < text.length) {
+                msgElem.innerHTML += text[i] === '\n' ? '<br>' : text[i];
+                i++;
+                setTimeout(typeChar, delay);
+            }
+        }
+        typeChar();
+    }
+
+    // Helper: Try to extract topic/grade/subject from user message (advanced)
+    function extractResourceQuery(userMsg) {
+        // Example: "Show me notes for grade 5 math on fractions"
+        const match = userMsg.match(/(?:grade\s*(\w+))?\s*(math|science|english|hindi|sst|social|physics|chemistry|biology)?\s*(?:on|about|for)?\s*([\w\s]+)?/i);
+        let grade = match && match[1] ? match[1].trim() : lastContext.grade;
+        let subject = match && match[2] ? match[2].trim() : lastContext.subject;
+        let topic = match && match[3] ? match[3].trim() : lastContext.topic;
+        return { grade, subject, topic };
+    }
+
+    // Floating attach button logic
+    attachFab.addEventListener('click', function() {
+        // Pre-fill modal with last context
+        document.getElementById('modal-grade').value = lastContext.grade || '';
+        document.getElementById('modal-subject').value = lastContext.subject || '';
+        document.getElementById('modal-topic').value = lastContext.topic || '';
+        modalBg.style.display = 'flex';
+    });
+    closeModalBtn.addEventListener('click', function() {
+        modalBg.style.display = 'none';
+        modalForm.reset();
+    });
+    modalForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        // Validate required fields (grade, subject, topic)
+        const grade = document.getElementById('modal-grade').value.trim();
+        const subject = document.getElementById('modal-subject').value.trim();
+        const topic = document.getElementById('modal-topic').value.trim();
+        if (!grade || !subject || !topic) {
+            window.showNotification('Please provide grade, subject, and topic.', 'error');
+            return;
+        }
+        const formData = new FormData(modalForm);
+        appendMessage('user', '[File upload]');
+        modalBg.style.display = 'none';
+        modalForm.reset();
+        // Upload to backend
+        const res = await fetch('/feature/assessment/upload_resource', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await res.json();
+        if (result.success && result.entry) {
+            appendResourceBubble(result.entry);
+            // Update context
+            lastContext.grade = result.entry.grade;
+            lastContext.subject = result.entry.subject;
+            lastContext.topic = result.entry.topic;
+            window.showNotification('Resource uploaded successfully!', 'info');
+        } else {
+            appendMessage('assistant', 'Upload failed: ' + (result.error || 'Unknown error'));
+            window.showNotification('Upload failed.', 'error');
+        }
+    });
+
+    // Main chat logic
+    chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const userMsg = chatInput.value.trim();
+        if (!userMsg) return;
+        appendMessage('user', userMsg);
+        chatInput.value = '';
+        chatInput.disabled = true;
+        // Show typing indicator
+        const typingElem = appendMessage('assistant', '', true);
+
+        // Advanced: Check if user is asking for notes/flashcards
+        let askResource = /\b(note|pdf|flashcard|image|file|resource|material|show|see|view|open)\b/i.test(userMsg);
+        let { grade, subject, topic } = extractResourceQuery(userMsg);
+        let resourceShown = false;
+        if (askResource && (grade || subject || topic)) {
+            // Try both types, show all matches as carousel/list
+            for (const type of ['note', 'flashcard']) {
+                const params = new URLSearchParams({grade, subject, topic, resource_type: type});
+                const res = await fetch('/feature/assessment/get_resources?' + params.toString());
+                const result = await res.json();
+                if (result.success && result.results.length) {
+                    if (type === 'flashcard' && result.results.length > 1) {
+                        setTimeout(() => appendResourceCarousel(result.results), 400);
+                    } else {
+                        setTimeout(() => appendResourceBubble(result.results[0]), 400);
+                    }
+                    resourceShown = true;
+                }
+            }
+            // If nothing found, offer upload
+            if (!resourceShown) {
+                setTimeout(() => {
+                    appendMessage('assistant', 'No saved notes or flashcards found for this topic. Would you like to upload one? Click the + button below.');
+                }, 400);
+            }
+        }
+        // Send to backend as usual
+        try {
+            const response = await fetch('/feature/voice_assistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ transcript: userMsg })
+            });
+            const data = await response.json();
+            let answer = '';
+            if (data && data.response) {
+                let txt = data.response;
+                try {
+                    if (typeof txt === 'string' && txt.startsWith('```json')) {
+                        txt = txt.replace(/^```json[\s\n]*/i, '').replace(/```$/, '').trim();
+                    }
+                    // Try to parse as JSON
+                    const obj = JSON.parse(txt);
+                    setTimeout(() => typeText(typingElem, obj.response_text || JSON.stringify(obj, null, 2)), 400);
+                } catch {
+                    setTimeout(() => typeText(typingElem, txt), 400);
+                }
+            } else {
+                setTimeout(() => typeText(typingElem, 'Sorry, I did not understand that.'), 400);
+            }
+        } catch (err) {
+            setTimeout(() => typeText(typingElem, 'Error: Could not reach the assistant.'), 400);
+        }
+        // Update context
+        lastContext = { grade, subject, topic };
+        chatInput.disabled = false;
+        chatInput.focus();
+    });
+    </script>
+</body>
+</html>
